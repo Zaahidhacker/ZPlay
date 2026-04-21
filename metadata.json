@@ -1,0 +1,6 @@
+{
+  "name": "YT Spotify Player",
+  "description": "A Spotify-style music player using the YouTube IFrame API.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
