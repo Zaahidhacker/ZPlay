@@ -1,10 +1,6 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { Home, Library, ListMusic, Music, Plus } from 'lucide-react';
 import { cn } from '../lib/utils';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-
-gsap.registerPlugin(useGSAP);
 
 type SidebarProps = {
   className?: string;
@@ -28,18 +24,6 @@ export default function Sidebar({
   pulseRef,
 }: SidebarProps) {
   const names = useMemo(() => Object.keys(playlists).sort((a, b) => a.localeCompare(b)), [playlists]);
-  const navRef = useRef<HTMLElement>(null);
-
-  useGSAP(
-    () => {
-      gsap.fromTo(
-        navRef.current,
-        { opacity: 0, x: -10, force3D: true },
-        { opacity: 1, x: 0, duration: 0.35, ease: 'power2.out', clearProps: 'all', force3D: true }
-      );
-    },
-    { scope: navRef }
-  );
 
   return (
     <aside className={cn('p-6 flex flex-col gap-6 border-r border-white/5 bg-[#0b0b0b]', className)}>
@@ -53,7 +37,7 @@ export default function Sidebar({
         </div>
       </div>
 
-      <nav ref={navRef} className="flex flex-col gap-2 text-[#B3B3B3] font-bold shrink-0">
+      <nav className="flex flex-col gap-2 text-[#B3B3B3] font-bold shrink-0">
         <button
           onClick={() => onNavigate('home')}
           className={cn(
