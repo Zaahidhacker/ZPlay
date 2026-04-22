@@ -1,9 +1,5 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Link2 } from 'lucide-react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-
-gsap.registerPlugin(useGSAP);
 
 type UrlInputBarProps = {
   value: string;
@@ -13,19 +9,9 @@ type UrlInputBarProps = {
 };
 
 export default function UrlInputBar({ value, onChange, onSubmit, onPasteUrl }: UrlInputBarProps) {
-  const wrapRef = useRef<HTMLFormElement>(null);
-
-  useGSAP(() => {
-    gsap.fromTo(
-      wrapRef.current,
-      { y: -8, opacity: 0, force3D: true },
-      { y: 0, opacity: 1, duration: 0.35, ease: 'power2.out', clearProps: 'all', force3D: true }
-    );
-  });
 
   return (
     <form
-      ref={wrapRef}
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit();
