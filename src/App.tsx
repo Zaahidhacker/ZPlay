@@ -175,6 +175,21 @@ export default function App() {
     (navigator.mediaSession as any).playbackState = state.isPlaying ? 'playing' : 'paused';
   }, [state.isPlaying]);
 
+  // Handle page visibility changes to resume playback when page becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && state.isPlaying && playerMap) {
+        // Check if player is not playing (state 1 is playing)
+        const playerState = playerMap.getPlayerState?.();
+        if (playerState !== 1) {
+          playerMap.playVideo();
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [state.isPlaying, playerMap]);
+
   const pulsePlaylistIcon = () => {
     if (!playlistPulseRef.current) return;
     gsap.killTweensOf(playlistPulseRef.current);
@@ -243,14 +258,14 @@ export default function App() {
 
   return (
     <div className="h-screen w-screen bg-[#000000] text-[#FFFFFF] font-sans flex flex-col overflow-hidden">
-      <div className="absolute top-[-9999px] left-[-9999px] invisible pointer-events-none">
+      <div className="absolute top-0 left-0 opacity-0 pointer-events-none">
         {state.videoId && (
           <YouTube
             videoId={state.videoId}
             opts={{
               height: '0',
               width: '0',
-              playerVars: { autoplay: 1, controls: 0, disablekb: 1, fs: 0, modestbranding: 1, rel: 0 },
+              playerVars: { autoplay: 1, controls: 0, disablekb: 1, fs: 0, modestbranding: 1, rel: 0, playsinline: 1, origin: window.location.origin },
             }}
             onReady={onReady}
             onStateChange={onStateChange}
