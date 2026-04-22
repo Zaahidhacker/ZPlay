@@ -9,10 +9,6 @@ import PlayerBar from './components/PlayerBar';
 import MobilePlayer from './components/MobilePlayer';
 import GlassModal from './components/GlassModal';
 import { addToPlaylist, ensurePlaylist, loadPlaylists, savePlaylists } from './lib/playlists';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-
-gsap.registerPlugin(useGSAP);
 
 export default function App() {
   const [urlInput, setUrlInput] = useState('');
@@ -38,7 +34,6 @@ export default function App() {
   const [newPlaylistName, setNewPlaylistName] = useState('');
 
   const [playlistsData, setPlaylistsData] = useState<PlaylistsMap>(() => ({ playlists: {} }));
-  const playlistPulseRef = useRef<HTMLDivElement>(null);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -49,10 +44,6 @@ export default function App() {
   useEffect(() => {
     savePlaylists(playlistsData);
   }, [playlistsData]);
-
-  useGSAP(() => {
-    gsap.defaults({ force3D: true });
-  }, []);
 
   const handlePlayPause = () => {
     if (!playerMap) return;
@@ -190,24 +181,6 @@ export default function App() {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [state.isPlaying, playerMap]);
 
-  const pulsePlaylistIcon = () => {
-    if (!playlistPulseRef.current) return;
-    gsap.killTweensOf(playlistPulseRef.current);
-    gsap.fromTo(
-      playlistPulseRef.current,
-      { boxShadow: '0 0 0px rgba(29,185,84,0)', scale: 1, force3D: true },
-      {
-        boxShadow: '0 0 22px rgba(29,185,84,0.55)',
-        scale: 1.04,
-        duration: 0.18,
-        ease: 'power2.out',
-        yoyo: true,
-        repeat: 1,
-        force3D: true,
-      }
-    );
-  };
-
   const openAddToPlaylist = () => {
     if (!state.details || !currentUrl) return;
     setIsAddToPlaylistOpen(true);
@@ -227,7 +200,6 @@ export default function App() {
     const item: PlaylistItem = { id: state.details.videoId, title: state.details.title, url: currentUrl };
     setPlaylistsData((prev) => addToPlaylist(prev, playlistName, item));
     setIsAddToPlaylistOpen(false);
-    pulsePlaylistIcon();
   };
 
   const onNavigate = (next: 'home' | 'library') => {
@@ -282,7 +254,6 @@ export default function App() {
           activePlaylistName={activePlaylistName}
           onSelectPlaylist={onSelectPlaylist}
           onCreatePlaylist={() => setIsCreatePlaylistOpen(true)}
-          pulseRef={playlistPulseRef}
         />
 
         <MainView
