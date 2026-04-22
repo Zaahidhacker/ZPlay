@@ -1,12 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { PlayerState } from '../types';
 import { ChevronDown, Play, Pause, SkipBack, SkipForward, MoreHorizontal, Share2 } from 'lucide-react';
 import { formatTime } from '../lib/youtube';
 import { cn } from '../lib/utils';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-
-gsap.registerPlugin(useGSAP);
 
 interface MobilePlayerProps {
   isOpen: boolean;
@@ -18,7 +14,6 @@ interface MobilePlayerProps {
 
 export default function MobilePlayer({ isOpen, onClose, state, onPlayPause, onSeek }: MobilePlayerProps) {
   const [isDragging, setIsDragging] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
   
   if (!state.details) return null;
 
@@ -28,37 +23,13 @@ export default function MobilePlayer({ isOpen, onClose, state, onPlayPause, onSe
     onSeek(parseFloat(e.target.value));
   };
 
-  useGSAP(
-    () => {
-      const el = rootRef.current;
-      if (!el) return;
-      gsap.set(el, { force3D: true });
-      if (isOpen) {
-        gsap.fromTo(el, { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.28, ease: 'power2.out', force3D: true });
-      } else {
-        gsap.to(el, { yPercent: 100, opacity: 0, duration: 0.22, ease: 'power2.in', force3D: true });
-      }
-    },
-    { dependencies: [isOpen] }
-  );
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [isOpen, onClose]);
-
   return (
     <div
-      ref={rootRef}
       className={cn(
-        'fixed inset-0 z-[70] bg-black flex flex-col pt-12 pb-8 px-6 md:hidden will-change-transform',
+        'fixed inset-0 z-[70] bg-black flex flex-col pt-12 pb-8 px-6 md:hidden',
         isOpen ? 'pointer-events-auto' : 'pointer-events-none'
       )}
-      style={{ transform: 'translate3d(0, 100%, 0)', opacity: 0 }}
+      style={{ transform: isOpen ? 'translateY(0)' : 'translateY(100%)', opacity: isOpen ? 1 : 0, transition: 'transform 0.28s ease-out, opacity 0.28s ease-out' }}
       aria-hidden={!isOpen}
     >
           {/* Header */}
