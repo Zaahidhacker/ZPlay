@@ -1,12 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { PlayerState } from '../types';
 import { Play, Pause, Plus, SkipBack, SkipForward, Volume2, VolumeX, Maximize2, Shuffle, Repeat } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { formatTime } from '../lib/youtube';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-
-gsap.registerPlugin(useGSAP);
 
 interface PlayerBarProps {
   state: PlayerState;
@@ -29,17 +25,6 @@ export default function PlayerBar({
 }: PlayerBarProps) {
   const [isHoveringSeek, setIsHoveringSeek] = useState(false);
   const [isHoveringVol, setIsHoveringVol] = useState(false);
-  const playerRef = useRef<HTMLElement>(null);
-
-  useGSAP(() => {
-    gsap.from(playerRef.current, {
-      y: 100,
-      opacity: 0,
-      duration: 0.5,
-      ease: "power2.out",
-      clearProps: "all"
-    });
-  }, { scope: playerRef });
 
   const progressPercent = state.duration > 0 ? (state.currentTime / state.duration) * 100 : 0;
   
@@ -59,7 +44,7 @@ export default function PlayerBar({
   if (!state.details) return null;
 
   return (
-    <footer ref={playerRef} className={cn("h-[90px] w-full bg-black/40 backdrop-blur-2xl border-t border-white/5 px-4 flex items-center justify-between relative z-50 will-change-transform", className)}>
+    <footer className={cn("h-[90px] w-full bg-black/40 backdrop-blur-2xl border-t border-white/5 px-4 flex items-center justify-between relative z-50", className)}>
       {/* Track Info */}
       <div className="flex items-center gap-4 w-[30%] min-w-[180px]">
         <div className="w-14 h-14 shrink-0 rounded shadow-lg overflow-hidden relative group cursor-pointer" onClick={onClickExpand}>
