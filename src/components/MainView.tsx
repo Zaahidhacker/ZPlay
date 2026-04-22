@@ -1,12 +1,8 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Music } from 'lucide-react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
 import type { PlayerState, PlaylistItem } from '../types';
 import UrlInputBar from './UrlInputBar';
 import PlaylistView from './PlaylistView';
-
-gsap.registerPlugin(useGSAP);
 
 type MainViewProps = {
   view: 'home' | 'playlist';
@@ -31,23 +27,10 @@ export default function MainView({
   playlistItems,
   onPlayPlaylistItem,
 }: MainViewProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      gsap.set(containerRef.current, { force3D: true });
-      gsap.fromTo(
-        containerRef.current,
-        { opacity: 0, y: 6, force3D: true },
-        { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out', clearProps: 'transform', force3D: true }
-      );
-    },
-    { dependencies: [view, playlistName], scope: containerRef }
-  );
 
   return (
     <main className="flex-1 bg-gradient-to-b from-[#0f0f0f] to-[#121212] p-5 md:p-8 flex flex-col gap-6 relative overflow-y-auto">
-      <div ref={containerRef} className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6">
         {view === 'home' && (
           <>
             <UrlInputBar value={urlInput} onChange={setUrlInput} onSubmit={onSubmitUrl} onPasteUrl={onPasteUrl} />
