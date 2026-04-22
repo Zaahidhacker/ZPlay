@@ -1,10 +1,6 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { ListMusic, Play } from 'lucide-react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
 import type { PlaylistItem } from '../types';
-
-gsap.registerPlugin(useGSAP);
 
 type PlaylistViewProps = {
   name: string;
@@ -13,27 +9,10 @@ type PlaylistViewProps = {
 };
 
 export default function PlaylistView({ name, items, onPlayItem }: PlaylistViewProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
   const sorted = useMemo(() => items, [items]);
 
-  useGSAP(
-    () => {
-      gsap.fromTo(
-        containerRef.current,
-        { opacity: 0, x: 12, force3D: true },
-        { opacity: 1, x: 0, duration: 0.28, ease: 'power2.out', clearProps: 'all', force3D: true }
-      );
-      gsap.fromTo(
-        '.playlist-row',
-        { opacity: 0, y: 10, force3D: true },
-        { opacity: 1, y: 0, duration: 0.25, stagger: 0.03, ease: 'power2.out', clearProps: 'transform', force3D: true }
-      );
-    },
-    { scope: containerRef, dependencies: [name, sorted.length] }
-  );
-
   return (
-    <div ref={containerRef} className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
           <ListMusic className="w-5 h-5 text-[#1DB954]" />
